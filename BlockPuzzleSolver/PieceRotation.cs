@@ -11,18 +11,26 @@ namespace BlockPuzzleSolver
 
         private int HashCode { get; set; }
 
+        public int FirstBlockColumnInRowZero { get; private set; }
+
         public PieceRotation(Point[] blocks)
         {
             int maxRow = 0;
             int maxColumn = 0;
+            int minColumnInRowZero = int.MaxValue;
+
             foreach (Point block in blocks)
             {
                 maxColumn = Math.Max(maxColumn, block.Column);
                 maxRow = Math.Max(maxRow, block.Row);
+                if (block.Row == 0)
+                    minColumnInRowZero = Math.Min(minColumnInRowZero, block.Column);
             }
 
             Rows = maxRow + 1;
             Columns = maxColumn + 1;
+            FirstBlockColumnInRowZero = minColumnInRowZero;
+
             Blocks = blocks;
             Array.Sort(this.Blocks);
 
