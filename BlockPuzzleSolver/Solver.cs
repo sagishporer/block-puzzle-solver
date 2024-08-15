@@ -8,14 +8,17 @@ namespace BlockPuzzleSolver
 
         private Model Problem { get; set; }
 
+        private bool PrintSolutions { get; set; }
+
         private long StartTimeTicks { get; set; }
 
-        public Solver(Model problem)
+        public Solver(Model problem, bool printSolutions)
         {
             if (problem.Pieces.Length > PIECE_SYMBOL.Length)
                 throw new Exception("Too many pieces. Not enough solution symbols. Max is: " + PIECE_SYMBOL.Length);
 
             this.Problem = problem;
+            this.PrintSolutions = printSolutions;
             this.StartTimeTicks = DateTime.Now.Ticks;
         }
 
@@ -55,8 +58,11 @@ namespace BlockPuzzleSolver
                         return 0;
 
                 // Found a solution
-                Console.WriteLine("Run time: {0}", new TimeSpan(DateTime.Now.Ticks - this.StartTimeTicks));
-                Console.WriteLine(board);
+                if (this.PrintSolutions)
+                {
+                    Console.WriteLine("Run time: {0}", new TimeSpan(DateTime.Now.Ticks - this.StartTimeTicks));
+                    Console.WriteLine(board);
+                }
 
                 return 1;
             }
@@ -119,11 +125,14 @@ namespace BlockPuzzleSolver
 
         private int SolveByPieces(int pieceNum, Board board)
         {
-            // Solution found, print it
+            // Solution found
             if (pieceNum >= this.Problem.Pieces.Length)
             {
-                Console.WriteLine("Run time: {0}", new TimeSpan(DateTime.Now.Ticks - this.StartTimeTicks));
-                Console.WriteLine(board);
+                if (this.PrintSolutions)
+                {
+                    Console.WriteLine("Run time: {0}", new TimeSpan(DateTime.Now.Ticks - this.StartTimeTicks));
+                    Console.WriteLine(board);
+                }
 
                 return 1;
             }
