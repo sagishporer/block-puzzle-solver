@@ -2,8 +2,8 @@
 Simple brute force, backtracking, block puzzle solver. I needed this to put a wooden block puzzle back into his box.
 
 Run time: 
-- ~30 seconds to yield first solution for my 8x8, 13 pieces puzzle.
-- 0.5 seconds to get all possible solutions for the 5x6 puzzle here: https://medium.com/@andreaiacono/backtracking-explained-7450d6ef9e1a
+- Less than a second to yield first solution for my 8x8, 13 pieces pentominoes puzzle.
+- Less than 2 minutes (without output) to enumerate all 129,168 solutions for pentominoes puzzle.
 
 Input file format -
 - Line 1: [Rows] [Columns]
