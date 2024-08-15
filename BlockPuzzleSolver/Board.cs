@@ -21,6 +21,11 @@ namespace BlockPuzzleSolver
                     BoardData[row, col] = ' ';
         }
 
+        public bool IsEmpty(int row, int column)
+        {
+            return BoardData[row, column] == ' ';
+        }
+
         public bool CanPlaceHere(int row, int column, PieceRotation rotation)
         {
             foreach (Point p in rotation.Blocks)
