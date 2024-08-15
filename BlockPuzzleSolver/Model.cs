@@ -37,7 +37,7 @@ namespace BlockPuzzleSolver
             }
 
             if (blocksCount != this.Rows * this.Columns)
-                throw new Exception(string.Format("Invalid blocks count, board size: {0}, sum of pieces: {1}",
+                throw new Exception(string.Format("Invalid blocks count, board size: {0}, sum of blocks: {1}",
                     this.Rows * this.Columns, blocksCount));
         }
 
