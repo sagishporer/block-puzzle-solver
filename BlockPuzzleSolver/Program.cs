@@ -12,6 +12,8 @@ namespace BlockPuzzleSolver
             using (StreamReader sr = new StreamReader("input.txt"))
             {
                 Model p = Model.Load(sr);
+                Console.WriteLine("Board size: {0}x{1}, Piece count: {2}", p.Rows, p.Columns, p.Pieces.Length);
+
                 Solver s = new Solver(p);
                 s.Solve();
             }
