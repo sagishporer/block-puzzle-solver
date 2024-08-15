@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Text;
 
 namespace BlockPuzzleSolver
 {
@@ -13,18 +12,112 @@ namespace BlockPuzzleSolver
 
         public Solver(Model problem)
         {
+            if (problem.Pieces.Length > PIECE_SYMBOL.Length)
+                throw new Exception("Too many pieces. Not enough solution symbols. Max is: " + PIECE_SYMBOL.Length);
+
             this.Problem = problem;
             this.StartTimeTicks = DateTime.Now.Ticks;
         }
 
-        public void Solve()
+        /// <summary>
+        /// Idea: fill the puzzle row by row.
+        /// 
+        /// Algorithm:
+        /// 1. If board completed - print solution, and go back.
+        /// 2. Select next empty position (filling rows first).
+        /// 3. Iterate the all unused pieces, try to place them. If placing is possible - go to step 1.
+        /// </summary>
+        /// <returns>Number of solutions found</returns>
+        public int SolveByRowColumn()
+        {
+            Board board = new Board(this.Problem.Rows, this.Problem.Columns);
+            bool[] usedPieces = new bool[this.Problem.Pieces.Length];
+            for (int i = 0; i < usedPieces.Length; i++)
+                usedPieces[i] = false;
+
+            return SolveByRowColumn(0, 0, board, usedPieces);
+        }
+
+        private int SolveByRowColumn(int nextRow, int nextColumn, Board board, bool[] usedPieces)
+        {
+            if (nextColumn >= board.Columns)
+            {
+                nextColumn = 0;
+                nextRow++;
+            }
+
+            // Reached the end of the board
+            if (nextRow >= board.Rows)
+            {
+                // Check that all the pieces were used
+                foreach (bool usedPiece in usedPieces)
+                    if (!usedPiece)
+                        return 0;
+
+                // Found a solution
+                Console.WriteLine("Run time: {0}", new TimeSpan(DateTime.Now.Ticks - this.StartTimeTicks));
+                Console.WriteLine(board);
+
+                return 1;
+            }
+
+            int solutionsFound = 0;
+            // If position is not empty - recuse
+            if (!board.IsEmpty(nextRow, nextColumn))
+            {
+                solutionsFound += SolveByRowColumn(nextRow, nextColumn + 1, board, usedPieces);
+            }
+            else
+            {
+                // Try to place pieces & recuse
+                for (int i = 0; i < usedPieces.Length; i++)
+                {
+                    if (usedPieces[i] == true)
+                        continue;
+
+                    Piece piece = this.Problem.Pieces[i];
+                    foreach (PieceRotation rotation in piece.Rotations)
+                    {
+                        int placingColumn = nextColumn - rotation.FirstBlockColumnInRowZero;
+                        if ((placingColumn < 0)||(placingColumn + rotation.Columns > board.Columns))
+                            continue;
+                        if (nextRow + rotation.Rows > board.Rows)
+                            continue;
+
+                        if (!board.CanPlaceHere(nextRow, placingColumn, rotation))
+                            continue;
+
+                        usedPieces[i] = true;
+                        board.PlaceHere(nextRow, placingColumn, rotation, PIECE_SYMBOL[i]);
+
+                        solutionsFound += SolveByRowColumn(nextRow, nextColumn + 1, board, usedPieces);
+
+                        board.PlaceHere(nextRow, placingColumn, rotation, ' ');
+                        usedPieces[i] = false;
+                    }
+                }
+            }
+
+            return solutionsFound;
+        }
+
+        /// <summary>
+        /// Idea: try to place pieces and see if you can place all the pieces.
+        /// 
+        /// Algorithm:
+        /// 1. If board completed - print solution, and go back.
+        /// 2. Select next piece.
+        /// 3. Iterate the entire board, try to place it. If placing is possible - go to step 1.
+        /// </summary>
+        /// <returns>Number of solutions found</returns>
+        public int SolveByPieces()
         {
             Board board = new Board(this.Problem.Rows, this.Problem.Columns);
 
-            Solve(0, board);
+            return SolveByPieces(0, board);
         }
 
-        private bool Solve(int pieceNum, Board board)
+        private int SolveByPieces(int pieceNum, Board board)
         {
             // Solution found, print it
             if (pieceNum >= this.Problem.Pieces.Length)
@@ -32,9 +125,10 @@ namespace BlockPuzzleSolver
                 Console.WriteLine("Run time: {0}", new TimeSpan(DateTime.Now.Ticks - this.StartTimeTicks));
                 Console.WriteLine(board);
 
-                return true;
+                return 1;
             }
 
+            int solutionsFound = 0;
             Piece piece = this.Problem.Pieces[pieceNum];
             foreach (PieceRotation rotation in piece.Rotations)
             {
@@ -48,18 +142,14 @@ namespace BlockPuzzleSolver
                         board.PlaceHere(row, column, rotation, PIECE_SYMBOL[pieceNum]);
 
                         // Recurse - don't stop when a solution found
-                        Solve(pieceNum + 1, board);
-
-                        // Recurse - stop when a solution found
-                        //if (Solve(pieceNum + 1, board))
-                        //    return true;
+                        solutionsFound += SolveByPieces(pieceNum + 1, board);
 
                         // Remove the piece
                         board.PlaceHere(row, column, rotation, ' ');
                     }
             }
 
-            return false;
+            return solutionsFound;
         }
     }
 }
