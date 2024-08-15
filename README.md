@@ -1,11 +1,14 @@
 # Block Puzzle Solver
-Simple brute force, backtracking, block puzzle solver. I needed this to put a wooden block puzzle back into his box.
+Simple brute force, backtracking, block puzzle solver. I needed this to put a wooden block puzzle back into his box. 
 
-Run time: 
-- Less than a second to yield first solution for my 8x8, 13 pieces pentominoes puzzle.
-- Less than 2 minutes (without output) to enumerate all 129,168 solutions for pentominoes puzzle.
+Note: Symmetric solutions are not removed.
 
-Input file format -
+### Run time 
+- Less than a second to yield first solution for my 8x8, 13 pieces pentominoes puzzle and all tested puzzles.
+- Less than 2 minutes (without output) to enumerate all 129,168 solutions for 8x8 pentomino puzzle (12 pentominoes + 2x2).
+- Less than 1 minute (without output) to enumerate all 9,356 solutions for 6x10 pentomino puzzle (12 pentominoes).
+
+### Input file format
 - Line 1: [Rows] [Columns]
 - Line 2+: shapes, seperated by empty line.
 
