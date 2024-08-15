@@ -3,7 +3,7 @@ using System.Text;
 
 namespace BlockPuzzleSolver
 {
-    class PieceRotation : IEquatable<PieceRotation>
+    public class PieceRotation : IEquatable<PieceRotation>
     {
         public int Rows { get; private set; }
         public int Columns { get; private set; }
