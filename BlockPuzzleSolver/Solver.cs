@@ -4,7 +4,7 @@ namespace BlockPuzzleSolver
 {
     class Solver
     {
-        private const string PIECE_SYMBOL = "123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        private const string PIECE_SYMBOL = "123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
 
         private Model Problem { get; set; }
 
